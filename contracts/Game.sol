@@ -77,7 +77,7 @@ contract Game is ERC721 {
             });
         }
 
-        // So we start with 1
+        // I start from 1, as non-initialized keys in holderToNft will have default value 0 and I need to a realiable way to check whether they were initialized or not
         _tokenIds.increment();
     }
 
@@ -145,6 +145,7 @@ contract Game is ERC721 {
         holderToNft[msg.sender] = newItemId;
 
         _tokenIds.increment();
+
     }
 
     function attackBoss() public {
@@ -189,5 +190,25 @@ contract Game is ERC721 {
             boss.hp,
             player.hp
         );
+
+    }
+
+    function checkIfUserHasNFT() public view returns (Character memory) {
+        uint256 nftTokenIdOfPlayer = holderToNft[msg.sender];
+
+        // Return the character if the user has one, otherwise return a new empty one
+        if (nftTokenIdOfPlayer > 0) return allNfts[nftTokenIdOfPlayer];
+        else {
+            Character memory emptyCharacter;
+            return emptyCharacter;
+        }
+    }
+
+    function getAllCharacters() public view returns (Character[] memory) {
+        return characters;
+    }
+
+    function getBoss() public view returns (Boss memory) {
+        return boss;
     }
 }
