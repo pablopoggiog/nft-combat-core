@@ -16,7 +16,23 @@ contract Game {
 
     Character[] characters;
 
-    constructor() {
-        console.log("Hello world");
+    constructor(
+        string[] memory characterNames,
+        string[] memory characterImageURIs,
+        uint256[] memory characterHp,
+        uint256[] memory characterAttackDamage
+    ) {
+        for (uint256 i = 0; i < characterNames.length; i++) {
+            Character memory newCharacter = Character({
+                index: i,
+                name: characterNames[i],
+                imageURI: characterImageURIs[i],
+                hp: characterHp[i],
+                maxHp: characterHp[i],
+                attackDamage: characterAttackDamage[i]
+            });
+
+            characters.push(newCharacter);
+        }
     }
 }
