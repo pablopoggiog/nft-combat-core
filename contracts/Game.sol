@@ -8,6 +8,8 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 
+import "./libraries/Base64.sol";
+
 contract Game is ERC721 {
     struct Character {
         uint256 index;
@@ -55,6 +57,47 @@ contract Game is ERC721 {
 
         // So we start with 1
         _tokenIds.increment();
+    }
+
+    function tokenURI(uint256 _tokenId)
+        public
+        view
+        override
+        returns (string memory output)
+    {
+        Character memory charAttributes = allNfts[_tokenId];
+
+        string memory hp = Strings.toString(charAttributes.hp);
+        string memory maxHp = Strings.toString(charAttributes.maxHp);
+        string memory attackDamage = Strings.toString(
+            charAttributes.attackDamage
+        );
+
+        string memory json = Base64.encode(
+            bytes(
+                string(
+                    abi.encodePacked(
+                        '{"name": "',
+                        charAttributes.name,
+                        " -- NFT #: ",
+                        Strings.toString(_tokenId),
+                        '", "description": "This is an NFT that lets people play in the game NFT Combat!", "image": "',
+                        charAttributes.imageURI,
+                        '", "attributes": [ { "trait_type": "Health Points", "value": ',
+                        hp,
+                        ', "max_value":',
+                        maxHp,
+                        '}, { "trait_type": "Attack Damage", "value": ',
+                        attackDamage,
+                        "} ]}"
+                    )
+                )
+            )
+        );
+
+        output = string(
+            abi.encodePacked("data:application/json;base64,", json)
+        );
     }
 
     function mintNFT(uint256 _characterIndex) external {
