@@ -146,4 +146,48 @@ contract Game is ERC721 {
 
         _tokenIds.increment();
     }
+
+    function attackBoss() public {
+        uint256 nftTokenIdOfPlayer = holderToNft[msg.sender];
+
+        Character storage player = allNfts[nftTokenIdOfPlayer];
+
+        console.log(
+            "\nPlayer with character %s about to attack. Has %s HP and %s AD",
+            player.name,
+            player.hp,
+            player.attackDamage
+        );
+        console.log(
+            "Boss %s has %s HP and %s AD",
+            boss.name,
+            boss.hp,
+            boss.attackDamage
+        );
+
+        // Check that any of the fighters is already dead
+        require(player.hp > 0, "Character must have HP to attack");
+
+        require(boss.hp > 0, "Boss must have HP to be attacked");
+
+        // The player attacks
+        if (boss.hp < player.attackDamage) {
+            boss.hp = 0;
+        } else {
+            boss.hp = boss.hp - player.attackDamage;
+        }
+
+        // The boss attacks back
+        if (player.hp < boss.attackDamage) {
+            player.hp = 0;
+        } else {
+            player.hp = player.hp - boss.attackDamage;
+        }
+
+        console.log(
+            " New boss HP: %s\n New player HP: %s\n",
+            boss.hp,
+            player.hp
+        );
+    }
 }
