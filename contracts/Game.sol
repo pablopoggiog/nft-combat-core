@@ -29,11 +29,25 @@ contract Game is ERC721 {
 
     mapping(address => uint256) public holderToNft;
 
+    struct Boss {
+        string name;
+        string imageURI;
+        uint256 hp;
+        uint256 maxHp;
+        uint256 attackDamage;
+    }
+
+    Boss public boss;
+
     constructor(
         string[] memory characterNames,
         string[] memory characterImageURIs,
         uint256[] memory characterHp,
-        uint256[] memory characterAttackDamage
+        uint256[] memory characterAttackDamage,
+        string memory bossName,
+        string memory bossImageURI,
+        uint256 bossHp,
+        uint256 bossAttackDamage
     ) ERC721("Fighters", "FIGHTER") {
         for (uint256 i = 0; i < characterNames.length; i++) {
             Character memory newCharacter = Character({
@@ -53,6 +67,14 @@ contract Game is ERC721 {
                 characters[i].hp,
                 characters[i].imageURI
             );
+
+            boss = Boss({
+                name: bossName,
+                imageURI: bossImageURI,
+                hp: bossHp,
+                maxHp: bossHp,
+                attackDamage: bossAttackDamage
+            });
         }
 
         // So we start with 1
