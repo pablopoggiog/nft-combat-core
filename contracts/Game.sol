@@ -39,6 +39,9 @@ contract Game is ERC721 {
 
     Boss public boss;
 
+    event NFTMinted(address sender, uint256 tokenId, uint256 characterIndex);
+    event AttackComplete(uint256 newBossHp, uint256 newPlayerHp);
+
     constructor(
         string[] memory characterNames,
         string[] memory characterImageURIs,
@@ -146,6 +149,7 @@ contract Game is ERC721 {
 
         _tokenIds.increment();
 
+        emit NFTMinted(msg.sender, newItemId, _characterIndex);
     }
 
     function attackBoss() public {
@@ -191,6 +195,7 @@ contract Game is ERC721 {
             player.hp
         );
 
+        emit AttackComplete(boss.hp, player.hp);
     }
 
     function checkIfUserHasNFT() public view returns (Character memory) {
